@@ -1,6 +1,7 @@
 import * as express from 'express';
 import clients from './clients';
 import apps from './apps';
+import events from './events';
 
 export default () => {
   const app = express();
@@ -23,6 +24,13 @@ export default () => {
     const app = apps.find(({id}) => id === appId);
 
     if (app) res.json(app);
+    else res.status(404).end();
+  });
+  app.get('/events/:appId', (req, res) => {
+    const {appId} = req.params
+    const appEvents = events.find(({id}) => id === appId);
+
+    if (appEvents) res.json(appEvents);
     else res.status(404).end();
   });
 
