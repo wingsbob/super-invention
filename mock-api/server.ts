@@ -1,5 +1,6 @@
 import * as express from 'express';
 import clients from './clients';
+import apps from './apps';
 
 export default () => {
   const app = express();
@@ -13,6 +14,9 @@ export default () => {
 
     if (client) res.json(client);
     else res.status(404).end();
+  });
+  app.get('/apps', (req, res) => {
+    res.json(apps);
   });
 
   return app.listen(3000);

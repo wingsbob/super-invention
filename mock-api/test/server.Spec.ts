@@ -1,5 +1,6 @@
 import server from '../server';
 import clients from '../clients';
+import apps from '../apps';
 import * as request from 'supertest';
 
 describe('the mock api server', () => {
@@ -70,6 +71,31 @@ describe('the mock api server', () => {
         .get('/client/2e9466b1-6fae-4639-80c8-101181688d06')
         .expect(200)
         .expect(clients.find(({id}) => id === '2e9466b1-6fae-4639-80c8-101181688d06'))
+        .end((err) => {
+          app.close();
+          done(err);
+        });
+    });
+  });
+  describe('GET /apps', () => {
+    it('returns JSON', (done) => {
+      const app = server();
+
+      request(app)
+        .get('/apps')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err) => {
+          app.close();
+          done(err);
+        });
+    });
+    it('returns a list of all apps', (done) => {
+      const app = server();
+
+      request(app)
+        .get('/apps')
+        .expect(apps)
         .end((err) => {
           app.close();
           done(err);
