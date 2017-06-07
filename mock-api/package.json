@@ -6,9 +6,9 @@
   "scripts": {
     "prestart": "tsc",
     "start": "node index.js",
-    "test": "mocha"
+    "test": "ts-mocha"
   },
-  "author": "",
+  "author": "Matthew Bull",
   "license": "MIT",
   "dependencies": {
     "express": "^4.15.3"
@@ -20,6 +20,7 @@
     "chai": "^4.0.2",
     "mocha": "^3.4.2",
     "supertest": "^3.0.0",
+    "ts-mocha": "^1.0.3",
     "typescript": "^2.3.4"
   }
 }

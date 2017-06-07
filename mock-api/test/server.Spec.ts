@@ -10,9 +10,9 @@ describe('the mock api server', () => {
         .get('/clients')
         .expect('Content-Type', /json/)
         .expect(200)
-        .end(() => {
+        .end((err) => {
           app.close();
-          done();
+          done(err);
         });
     });
   });
