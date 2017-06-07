@@ -18,6 +18,13 @@ export default () => {
   app.get('/apps', (req, res) => {
     res.json(apps);
   });
+  app.get('/app/:appId', (req, res) => {
+    const {appId} = req.params
+    const app = apps.find(({id}) => id === appId);
+
+    if (app) res.json(app);
+    else res.status(404).end();
+  });
 
   return app.listen(3000);
 };
