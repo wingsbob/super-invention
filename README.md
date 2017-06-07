@@ -7,7 +7,7 @@ The API doesn't actually do anything here, it's simply a thing I can develop thi
 ## Summary of the workflow:
 Read a file containing the customerIds to update.
 Get all the appIds for the customers we want to update.
-Update the apps as appropriate.
+Update the apps as appropriate. This is done in 2 parts, as event updates are separate to updating supported devices. Presumably the API has a reason it's set up this way.
 Deploy the updated apps.
 
 ## Running the project
