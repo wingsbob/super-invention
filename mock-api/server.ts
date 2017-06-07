@@ -7,6 +7,13 @@ export default () => {
   app.get('/clients', (req, res) => {
     res.json(clients);
   });
+  app.get('/client/:clientId', (req, res) => {
+    const {clientId} = req.params
+    const client = clients.find(({id}) => id === clientId);
+
+    if (client) res.json(client);
+    else res.status(404).end();
+  });
 
   return app.listen(3000);
 };
