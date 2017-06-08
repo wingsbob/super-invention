@@ -5,7 +5,7 @@ import apps from './apps';
 import events from './events';
 
 const createGetById = (idName: string, collection: {id: string}[]) =>
-  (req, res) => {
+  (req: express.Request, res: express.Response) => {
     const requestedId = req.params[idName];
     const target = collection.find(({id}) => id === requestedId);
 
@@ -14,25 +14,35 @@ const createGetById = (idName: string, collection: {id: string}[]) =>
   };
 
 export default () => {
+  const instanceClients: typeof clients = JSON.parse(JSON.stringify(clients))
+  const instanceApps: typeof apps = JSON.parse(JSON.stringify(apps))
+  const instanceEvents: typeof events = JSON.parse(JSON.stringify(events))
   const app = express();
 
   app.use(bodyParser.json());
-  app.get('/apps', (req, res) => res.json(apps));
-  app.get('/clients', (req, res) => res.json(clients));
+  app.get('/apps', (req, res) => res.json(instanceApps));
+  app.get('/clients', (req, res) => res.json(instanceClients));
 
-  app.get('/client/:clientId', createGetById('clientId', clients))
-  app.get('/app/:appId', createGetById('appId', apps));
-  app.get('/events/:appId', createGetById('appId', events));
+  app.get('/client/:clientId', createGetById('clientId', instanceClients))
+  app.get('/app/:appId', createGetById('appId', instanceApps));
+  app.get('/events/:appId', createGetById('appId', instanceEvents));
 
   app.put('/events/:appId', (req, res) => {
     const {appId} = req.params
-    const appEvents = events.find(({id}) => id === appId);
+    const eventsIndex = instanceEvents.findIndex(({id}) => id === appId);
 
-    if (!appEvents) res.status(404).send(`event with id: ${appId} does not exist`);
+    if (eventsIndex === -1) res.status(404).send(`event with id: ${appId} does not exist`);
     else {
       const update = req.body;
       if (appId !== update.id) res.status(400).send(`cannot modify appId for an event`);
-      else res.status(204).send();
+      else {
+        const events = instanceEvents.splice(eventsIndex, 1)[0];
+        instanceEvents.push({
+          ...events,
+          ...update
+        });
+        res.status(204).send();
+      }
     }
   });
 

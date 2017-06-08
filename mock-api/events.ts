@@ -9,7 +9,7 @@ interface IEventConfig {
   level: eventLevels;
 }
 
-interface IEvents {
+export interface IEvents {
   id: string;
   event1: IEventConfig;
   event2: IEventConfig;

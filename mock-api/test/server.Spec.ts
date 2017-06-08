@@ -1,7 +1,10 @@
 import server from '../server';
 import clients from '../clients';
+import {IClient} from '../clients';
 import apps from '../apps';
+import {IApp} from '../apps';
 import events from '../events';
+import {IEvents} from '../events';
 import * as request from 'supertest';
 
 describe('the mock api server', () => {
@@ -71,7 +74,7 @@ describe('the mock api server', () => {
       request(app)
         .get('/client/2e9466b1-6fae-4639-80c8-101181688d06')
         .expect(200)
-        .expect(clients.find(({id}) => id === '2e9466b1-6fae-4639-80c8-101181688d06'))
+        .expect(<IClient>clients.find(({id}) => id === '2e9466b1-6fae-4639-80c8-101181688d06'))
         .end((err) => {
           app.close();
           done(err);
@@ -142,7 +145,7 @@ describe('the mock api server', () => {
       request(app)
         .get('/client/2e9466b1-6fae-4639-80c8-101181688d06')
         .expect(200)
-        .expect(clients.find(({id}) => id === '2e9466b1-6fae-4639-80c8-101181688d06'))
+        .expect(<IClient>clients.find(({id}) => id === '2e9466b1-6fae-4639-80c8-101181688d06'))
         .end((err) => {
           app.close();
           done(err);
@@ -190,7 +193,7 @@ describe('the mock api server', () => {
       request(app)
         .get('/app/316dc366-4a24-463f-b87c-2e8f2c11a903')
         .expect(200)
-        .expect(apps.find(({id}) => id === '316dc366-4a24-463f-b87c-2e8f2c11a903'))
+        .expect(<IApp>apps.find(({id}) => id === '316dc366-4a24-463f-b87c-2e8f2c11a903'))
         .end((err) => {
           app.close();
           done(err);
@@ -238,7 +241,7 @@ describe('the mock api server', () => {
       request(app)
         .get('/events/316dc366-4a24-463f-b87c-2e8f2c11a903')
         .expect(200)
-        .expect(events.find(({id}) => id === '316dc366-4a24-463f-b87c-2e8f2c11a903'))
+        .expect(<IEvents>events.find(({id}) => id === '316dc366-4a24-463f-b87c-2e8f2c11a903'))
         .end((err) => {
           app.close();
           done(err);
@@ -280,18 +283,6 @@ describe('the mock api server', () => {
           done(err);
         });
     });
-    it('returns a 400 when the update is not an object', (done) => {
-      const app = server();
-
-      request(app)
-        .put('/events/316dc366-4a24-463f-b87c-2e8f2c11a903')
-        .send(null)
-        .expect(400)
-        .end((err) => {
-          app.close();
-          done(err);
-        });
-    });
     it('returns a 204 when the update has the same Id', (done) => {
       const app = server();
 
@@ -303,6 +294,32 @@ describe('the mock api server', () => {
           app.close();
           done(err);
         });
+    });
+    it('returns returns the updated events ', (done) => {
+      const app = server();
+
+      request(app)
+        .put('/events/316dc366-4a24-463f-b87c-2e8f2c11a903')
+        .send({
+          id: '316dc366-4a24-463f-b87c-2e8f2c11a903',
+          event3: {
+            enabled: true
+          }
+        })
+        .end((err) =>
+          request(app)
+            .get('/events/316dc366-4a24-463f-b87c-2e8f2c11a903')
+            .expect({
+              ...events.find(({id}) => id === '316dc366-4a24-463f-b87c-2e8f2c11a903'),
+              event3: {
+                enabled: true
+              }
+            })
+            .end(err => {
+              app.close();
+              done(err);
+            })
+        );
     });
   });
 });

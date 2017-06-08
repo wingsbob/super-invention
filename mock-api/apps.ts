@@ -4,7 +4,7 @@ enum supportedDevices {
   mobileAndDesktop = 3
 }
 
-interface IApp {
+export interface IApp {
   id: string;
   supportedDevices: supportedDevices;
   enabled: boolean;

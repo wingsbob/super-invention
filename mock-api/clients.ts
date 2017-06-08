@@ -1,4 +1,4 @@
-interface IClient {
+export interface IClient {
   id: string;
   apps: string[];
   name: string;
