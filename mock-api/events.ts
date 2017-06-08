@@ -18,6 +18,17 @@ export interface IEvents {
 
 const events: IEvents[] = [
   {
+    id: "f614bef0-c229-4b25-8dd6-d5eb142fbb16",
+    event1: {
+      level: eventLevels.medium,
+      enabled: true
+    },
+    event2: {
+      level: eventLevels.low,
+      enabled: false
+    }
+  },
+  {
     id: "316dc366-4a24-463f-b87c-2e8f2c11a903",
     event1: {
       level: eventLevels.medium,
