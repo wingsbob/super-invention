@@ -392,4 +392,76 @@ describe('the mock api server', () => {
         );
     });
   });
+  describe('GET /config/:clientId', () => {
+    it('404s initially', (done) => {
+      const app = server();
+
+      request(app)
+        .get('/config/2e9466b1-6fae-4639-80c8-101181688d06')
+        .expect(404)
+        .end(err => {
+          app.close();
+          done(err);
+        });
+    });
+    it('returns JSON after the client is deployed', (done) => {
+      const app = server();
+      const wrapUp = (err: Error|null) => {
+        app.close();
+        done(err);
+      }
+      request(app)
+        .put('/deploy/2e9466b1-6fae-4639-80c8-101181688d06')
+        .expect(204)
+        .end((err) => {
+          if (err) wrapUp(err)
+          else {
+            return request(app)
+              .get('/config/2e9466b1-6fae-4639-80c8-101181688d06')
+              .expect(200)
+              .expect('Content-Type', /json/)
+              .end(wrapUp)
+          }
+        });
+    });
+    it('bundles all the config together', (done) => {
+      const app = server();
+      const wrapUp = (err: Error|null) => {
+        app.close();
+        done(err);
+      }
+      request(app)
+        .put('/deploy/2e9466b1-6fae-4639-80c8-101181688d06')
+        .expect(204)
+        .end((err) => {
+          if (err) wrapUp(err)
+          else {
+            return request(app)
+              .get('/config/2e9466b1-6fae-4639-80c8-101181688d06')
+              .expect({
+                id: '2e9466b1-6fae-4639-80c8-101181688d06',
+                name: 'my first client',
+                apps: [{
+                  id: 'f614bef0-c229-4b25-8dd6-d5eb142fbb16',
+                  enabled: true,
+                  supportedDevices: 3,
+                  events: {
+                    id: 'f614bef0-c229-4b25-8dd6-d5eb142fbb16',
+                    event1: {
+                      level: 2,
+                      enabled: true
+                    },
+                    event2: {
+                      level: 1,
+                      enabled: false
+                    }
+                  }
+                }]
+              })
+              .expect('Content-Type', /json/)
+              .end(wrapUp)
+          }
+        });
+    });
+  });
 });
